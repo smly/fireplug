@@ -272,12 +272,14 @@ def run(args, remaining_args):
     sync path is defined on a config file, which is located on `.fp`.
     """
     host_list = docker_hosts()
+    bucket_path = conf('sync', 's3')
 
     if args.host is not None:
         if args.host in host_list:
             host_list = [args.host]
         else:
-            raise RuntimeError("Unknown host: {}".format(args.host))
+            print("RuntimeError: Unknown host: {}".format(args.host))
+            sys.exit(1)
 
     for docker_host in host_list:
         if not check_host_is_ready(docker_host):
@@ -288,21 +290,27 @@ def run(args, remaining_args):
             build_docker_image(docker_host, args)
 
         # >>> Sync
-        if not args.nosync:
-            # sync_s3_bucket(docker_host, args)
-            rsync_files(docker_host, args)
+        if not args.nosync and not args.outsync:
+            if bucket_path == 'None':
+                rsync_files(docker_host, args)
+            else:
+                sync_s3_bucket(docker_host, args)
 
         # >>> Run
-        run_docker(docker_host, remaining_args, args)
+        if not args.norun:
+            run_docker(docker_host, remaining_args, args)
 
         # >>> Sync
-        if not args.nosync:
-            # sync_s3_bucket(docker_host, args, reverse=True)
-            rsync_files(docker_host, args, reverse=True)
+        if not args.nosync and not args.insync:
+            if bucket_path == 'None':
+                rsync_files(docker_host, args, reverse=True)
+            else:
+                sync_s3_bucket(docker_host, args, reverse=True)
 
         sys.exit(0)
 
-    raise RuntimeError("No docker host is ready to run.")
+    print("RuntimeError: No docker host is ready to run.")
+    sys.exit(1)
 
 
 def show_version():
@@ -403,6 +411,11 @@ if __name__ == '__main__':
         default=False,
         help='Show version info')
     parser.add_argument(
+        "--norun",
+        action='store_true',
+        default=False,
+        help="No run")
+    parser.add_argument(
         "--nobuild",
         action='store_true',
         default=False,
@@ -412,6 +425,16 @@ if __name__ == '__main__':
         action='store_true',
         default=False,
         help="No sync")
+    parser.add_argument(
+        "--insync",
+        action='store_true',
+        default=False,
+        help="insync only")
+    parser.add_argument(
+        "--outsync",
+        action='store_true',
+        default=False,
+        help="outsync only")
     parser.add_argument(
         "--verbose",
         action='store_true',
