@@ -2,15 +2,12 @@
 
 A plug to multiple remote Docker hosts.
 
-## BSRS-flow
-
-For each commands, FirePlug uses the sequence of following commands: Build-Sync-Run-Sync.
-
 ## Requirements
 
+* docker
+* docker-machine
 * rsync
-* docker 1.9.1
-* docker-machine 0.6.0
+* awscli (optional)
 
 ## Usage
 
@@ -52,3 +49,7 @@ sending incremental file list
 [2]     valid_0-mlogloss:1.028755       valid_1-mlogloss:1.034398
 (snip)
 ```
+
+## BSRS-flow
+
+FirePlug uses the sequence of following commands: Build-Sync-Run-Sync.
