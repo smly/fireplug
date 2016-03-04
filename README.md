@@ -24,7 +24,7 @@ NAME    ACTIVE   DRIVER      STATE     URL                        SWARM   DOCKER
 aws01   -        amazonec2   Running   tcp://52.36.102.243:2376           v1.9.1
 aws02   -        amazonec2   Running   tcp://52.36.102.244:2376           v1.9.1
 
-### Initialize Fireplug configuration: `.fp`, `Dockerfile` and `.dockerfile` are generated.
+### Initialize FirePlug configuration: `.fp`, `Dockerfile` and `.dockerignore` are generated.
 $ fp --init
 [1/4] Enter your project name: telstra
 [2/4] Enter your s3 bucket name (Default: None):
@@ -53,3 +53,7 @@ sending incremental file list
 ## BSRS-flow
 
 FirePlug uses the sequence of following commands: Build-Sync-Run-Sync.
+
+## Related project
+
+* https://github.com/smly/alpine-kaggle
