@@ -311,11 +311,6 @@ def show_version():
 
 
 def init():
-    # TODO: check .aws files work correctly.
-    if not os.path.exists('.aws'):
-        print("RuntimeError: Put your .aws config on current directory!")
-        sys.exit(1)
-
     # ask project name and s3 bucket
     project_name = raw_input("[1/4] Enter your project name: ")
     s3_bucket = raw_input("[2/4] Enter your s3 bucket name (Default: None): ")
@@ -331,6 +326,11 @@ def init():
         docker_img = 'smly/alpine-kaggle'
     if localpath.strip() == '':
         localpath = 'data'
+
+    # TODO: check .aws files work correctly.
+    if s3_bucket != 'None' and not os.path.exists('.aws'):
+        print("RuntimeError: Put your .aws config on current directory!")
+        sys.exit(1)
 
     # path
     datapath = os.path.join("/data", project_name)
