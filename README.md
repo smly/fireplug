@@ -2,14 +2,6 @@
 
 A plug to multiple remote Docker hosts.
 
-## Requirements
-
-* docker
-* docker-machine
-* rsync
-* awscli (optional)
-* gcloud (optional)
-
 ## Usage
 
 ```bash
@@ -80,6 +72,15 @@ working/mushroom.model
 $ file data/working/mushroom.model
 data/working/mushroom.model: data
 ```
+
+## Requirements
+
+* docker
+* docker-machine
+* rsync
+* pyyaml (optional)
+* awscli (optional)
+* gcloud (optional)
 
 ## BSRS-flow
 
