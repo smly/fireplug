@@ -14,6 +14,7 @@ License: BSD3
 """
 import os
 import sys
+import yaml
 import json
 import subprocess
 import argparse
@@ -217,10 +218,31 @@ def mkdir_datapath(docker_host, args):
     _docker_machine_cmd(cmd)
 
 
+def describe_gcp_ipaddress(docker_host):
+    cmd = ['gcloud', 'compute', 'instances', 'describe', docker_host]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    ret = []
+    for line in proc.stdout:
+        ret.append(line.rstrip())
+        proc.stdout.flush()
+
+    inspect_ret = yaml.load("\n".join(ret))
+    ipaddr = inspect_ret['networkInterfaces'][0]['accessConfigs'][0]['natIP']
+    return ipaddr
+
+
 def rsync_files(docker_host, args, reverse=False):
     inspect_ret = docker_machine_inspect(docker_host)
-    sshkey_path = inspect_ret['Driver']['SSHKeyPath']
-    ipaddr = inspect_ret['Driver']['IPAddress']
+    driver_name = inspect_ret['DriverName']
+    if driver_name == 'google':
+        sshkey_path = inspect_ret['Driver']['SSHKeyPath']
+        ipaddr = describe_gcp_ipaddress(docker_host)
+    elif driver_name == 'amazonec2':
+        sshkey_path = inspect_ret['Driver']['SSHKeyPath']
+        ipaddr = inspect_ret['Driver']['IPAddress']
+    else:
+        raise RuntimeError(
+            "Unsupported DriverName is used: {}".format(driver_name))
 
     # Load configurations
     sync_datapath = conf('sync', 'datapath')
@@ -325,6 +347,7 @@ def run(args, remaining_args):
 
         sys.exit(0)
 
+    # TODO: handling the case when `--host` option is used.
     print("RuntimeError: No docker host is ready to run.")
     sys.exit(1)
 
