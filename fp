@@ -27,6 +27,10 @@ VERSION = '1.1'
 if os.path.exists('.fp'):
     __conf = ConfigParser.ConfigParser()
     __conf.read('.fp')
+else:
+    print("No configuration file for FirePlug.")
+    print("Initialize FirePlug with `fp --init` on your project directory.")
+    sys.exit(1)
 
 
 def conf(k1, k2):
