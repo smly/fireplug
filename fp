@@ -204,6 +204,19 @@ def run_docker(docker_host, script_args, args):
     return
 
 
+def mkdir_datapath(docker_host, args):
+    sync_datapath = conf('sync', 'datapath')
+    cmd = ['sudo', 'mkdir', '-p', sync_datapath]
+    cmd = ['docker-machine', 'ssh', docker_host] + cmd
+
+    # Run
+    if args.verbose:
+        print("({}) >>> ".format(docker_host) + " ".join(cmd))
+
+    # TODO: error handling
+    _docker_machine_cmd(cmd)
+
+
 def rsync_files(docker_host, args, reverse=False):
     inspect_ret = docker_machine_inspect(docker_host)
     sshkey_path = inspect_ret['Driver']['SSHKeyPath']
@@ -284,6 +297,9 @@ def run(args, remaining_args):
     for docker_host in host_list:
         if not check_host_is_ready(docker_host):
             continue
+
+        # Check datapath (mkdir -p)
+        mkdir_datapath(docker_host, args)
 
         # >>> Build
         if not args.nobuild:
@@ -368,7 +384,7 @@ Dockerfile
 
     with open("./Dockerfile", 'w') as f:
         f.write("""FROM {docker_img:s}
-RUN mkdir -p {datapath:s} && ln -s {datapath:s} /root/data
+RUN ln -s {datapath:s} /root/data
 COPY ./ /root/
 WORKDIR /root
 """.format(docker_img=docker_img,

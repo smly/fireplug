@@ -81,7 +81,47 @@ data/working/mushroom.model: data
 
 ## BSRS-flow
 
-FirePlug uses the sequence of following commands: Build-Sync-Run-Sync.
+FirePlug uses the sequence of following steps: Build-Sync-Run-Sync.
+By default, Sync step issues `rsync` command to sync local data and remote data.
+AWS S3 bucket is also supported on Sync step, by using `aws s3 sync`.
+
+### How to create a remote Docker host
+
+For example, you can create a remote Docker host by following command:
+
+```bash
+$ docker-machine create \
+    --driver amazonec2 \
+    --amazonec2-vpc-id <VPC ID> \
+    --amazonec2-subnet-id <SUBNET ID> \
+    --amazonec2-region <REGION> \
+    --amazonec2-zone <ZONE NAME> \
+    --amazonec2-instance-type <INSTANCE TYPE> \
+    --amazonec2-root-size <ROOT SIZE> \
+    --amazonec2-ami ami-16b1a077 \
+    --amazonec2-security-group <SECURITY GROUP> \
+    --amazonec2-request-spot-instance \
+    --amazonec2-spot-price <SPOT PRICE> \
+    <HOST NAME>
+Running pre-create checks...
+Creating machine...
+(aws02) Launching instance...
+(aws02) Waiting for spot instance...
+(aws02) Created spot instance request %v sir-0399wx71
+Waiting for machine to be running, this may take a few minutes...
+Detecting operating system of created instance...
+Waiting for SSH to be available...
+Detecting the provisioner...
+Provisioning with ubuntu(systemd)...
+Installing Docker...
+```
+
+In some case, it causes error while running provisioning. Then,
+
+```bash
+$ docker-machine rm <HOST NAME>
+$ aws ec2 delete-key-pair --key-name <HOST NAME>
+```
 
 ## Related project
 
