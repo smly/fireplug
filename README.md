@@ -5,7 +5,7 @@ A plug to multiple remote Docker hosts.
 ## Usage
 
 ```bash
-### Make directory for new proejct
+### Create a directory for your proejct
 $ mkdir telstra-kaggle; cd telstra-kaggle
 
 ### Write your code
@@ -32,7 +32,7 @@ $ python beat_the_benchmark.py
 [2]     valid_0-mlogloss:1.028755       valid_1-mlogloss:1.034398
 (snip)
 
-### Run the sample code on remote Docker host
+### Run your code on remote Docker host!
 $ fp python beat_the_benchmark.py
 (aws01) Build images ...
 (aws01) Sync files...
@@ -43,7 +43,7 @@ sending incremental file list
 [2]     valid_0-mlogloss:1.028755       valid_1-mlogloss:1.034398
 (snip)
 
-### Run xgboooooost command on remote Dcoker host
+### Run xgboooooost command on remote Docker host
 $ fp xgboost data/input/mushroom.conf model_out=data/working/mushroom.model
 (aws01) Build images ...
 (aws01) Sync files...
@@ -78,9 +78,12 @@ data/working/mushroom.model: data
 * docker
 * docker-machine
 * rsync
-* pyyaml (optional)
-* awscli (optional)
-* gcloud (optional)
+
+Recommended Dependencies:
+
+* awscli: for synchronizing local folders with Amazon S3 buckets on sync step.
+* gcloud: for inspecting remote docker host on google cloud platform.
+* pyyaml: for handling the output from gcloud.
 
 ## BSRS-flow
 
