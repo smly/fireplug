@@ -1,5 +1,4 @@
-#!/bin/env python
-# -*- coding: utf-8 -8-
+#!/usr/bin/env python
 """
 fp (FirePlug) ... Run your code on remote Docker hosts
 
@@ -18,7 +17,7 @@ import yaml
 import json
 import subprocess
 import argparse
-import ConfigParser
+import configparser as ConfigParser
 
 
 VERSION = '1.1'
@@ -44,7 +43,7 @@ def _docker_machine_cmd(cmd):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     ret = []
     for line in proc.stdout:
-        ret.append(line.rstrip())
+        ret.append( line.decode('utf-8').rstrip() )
         proc.stdout.flush()
     return ret
 
@@ -223,7 +222,7 @@ def describe_gcp_ipaddress(docker_host):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     ret = []
     for line in proc.stdout:
-        ret.append(line.rstrip())
+        ret.append( line.decode('utf-8').rstrip() )
         proc.stdout.flush()
 
     inspect_ret = yaml.load("\n".join(ret))
@@ -359,11 +358,11 @@ def show_version():
 
 def init():
     # ask project name and s3 bucket
-    project_name = raw_input("[1/4] Enter your project name: ")
-    s3_bucket = raw_input("[2/4] Enter your s3 bucket name (Default: None): ")
-    localpath = raw_input(
+    project_name = input("[1/4] Enter your project name: ")
+    s3_bucket = input("[2/4] Enter your s3 bucket name (Default: None): ")
+    localpath = input(
         "[3/4] Enter data path on local client (Default: data): ")
-    docker_img = raw_input(
+    docker_img = input(
         "[4/4] Enter your base docker image (Default: smly/alpine-kaggle): ")
 
     # Set default value if input value is empty
